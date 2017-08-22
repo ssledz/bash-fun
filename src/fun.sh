@@ -234,3 +234,14 @@ zip() {
   done
 }
 
+function curry() {
+  exportfun=$1; shift
+  fun=$1; shift
+  params=$*
+  cmd=$"function $exportfun() {
+      more_params=\$*;
+      $fun $params \$more_params;
+  }"
+  eval $cmd
+}
+

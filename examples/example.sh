@@ -47,3 +47,11 @@ echo -n ' abcdefg' | splitc | foldr lambda a b . 'echo $a$b'  # gfedcba
 echo 'ls' | try λ cmd status ret . 'echo $cmd [$status]; echo $ret'
 
 list {1..10} | filter lambda a . '[[ $(mod $a 2) -eq 0 ]] && ret true || ret false' | join , '[' ']'  # [2,4,6,8,10]
+
+function add() {
+    expr $1 + $2
+}
+
+
+curry add3 add 3
+add3 9
