@@ -55,3 +55,6 @@ function add() {
 
 curry add3 add 3
 add3 9
+
+list a b c d | foldl lambda acc el . 'echo -n $acc-$el'
+list '' a b c d | foldr lambda acc el . 'if [[ ! -z $acc ]]; then echo -n $acc-$el; else echo -n $el; fi'

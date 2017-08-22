@@ -85,11 +85,18 @@ foldl() {
 foldr() {
   local f="$@"
   local acc
-  read acc
-
+  local zero
+  read zero
   foldrr() {
     local elem
-    read elem && acc=$(foldrr)
+
+    if read elem; then
+        acc=$(foldrr)
+#        [[ -z $acc ]] && echo $elem && return
+    else
+        echo $zero && return
+    fi
+
     acc="$({ echo $acc; echo $elem; } | $f )"
     echo "$acc"
   }
