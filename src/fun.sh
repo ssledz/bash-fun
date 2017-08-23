@@ -170,9 +170,10 @@ revers_str() {
 try() {
   local f="$@"
   local cmd=$(cat -)
-  ret="$(2>&1 $cmd)"
-  local status=$?
-  list "$cmd" $status $(list $ret | join \#) | $f
+  local ret=$(2>&1 eval "$cmd"; echo $?)
+  local cnt=$(list $ret | wc -l)
+  local status=$(list $ret | last)
+  list "$cmd" $status $(list $ret | take $((cnt - 1)) | join \#) | $f
 }
 
 ret() {
