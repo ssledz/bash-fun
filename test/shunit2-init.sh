@@ -1,3 +1,5 @@
+#!/bin/bash
+
 oneTimeSetUp() {
   . ../src/fun.sh
 }

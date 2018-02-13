@@ -1,5 +1,13 @@
 #! /bin/bash
 
+testLambdaNoArguments_ifNoInput() {
+    assertEquals 'Hi there' "$(echo | lambda . 'echo Hi there')"
+}
+
+testLambdaNoArguments_ifSomeInputArguments() {
+    assertEquals 'Hi there' "$(echo 'xx\nyy\nzz' | lambda . 'echo Hi there')"
+}
+
 testLambdaOneArgument() {
   identity() {
     lambda x . '$x'
