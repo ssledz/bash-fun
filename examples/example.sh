@@ -118,3 +118,42 @@ echo 0 | cat - <(curl -s https://raw.githubusercontent.com/ssledz/bash-fun/v1.1.
 
 echo 0 | cat - <(curl -s curl -s https://raw.githubusercontent.com/ssledz/bash-fun/v1.1.1/src/fun.sh) \
             | foldl lambda acc el . 'echo $(($acc + 1))'
+
+
+factorial() {
+    fact_iter() {
+        local product=$1
+        local counter=$2
+        local max_count=$3
+        if [[ $counter -gt $max_count ]]; then
+            echo $product
+        else
+            fact_iter $(echo $counter\*$product | bc) $(($counter + 1)) $max_count
+        fi
+    }
+
+    fact_iter 1 1 $1
+}
+
+factorial_trampoline() {
+    fact_iter() {
+        local product=$1
+        local counter=$2
+        local max_count=$3
+        if [[ $counter -gt $max_count ]]; then
+            res $product
+        else
+            call fact_iter $(echo $counter\*$product | bc) $(($counter + 1)) $max_count
+        fi
+    }
+
+    with_trampoline fact_iter 1 1 $1
+}
+
+echo Factorial test
+
+time factorial 30
+time factorial_trampoline 30
+
+time factorial 60
+time factorial_trampoline 60

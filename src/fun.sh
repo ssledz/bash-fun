@@ -242,7 +242,7 @@ zip() {
   done
 }
 
-function curry() {
+curry() {
   exportfun=$1; shift
   fun=$1; shift
   params=$*
@@ -253,3 +253,25 @@ function curry() {
   eval $cmd
 }
 
+with_trampoline() {
+  local f=$1; shift
+  local args=$@
+  while [[ $f != 'None' ]]; do
+    ret=$($f $args)
+#    echo $ret
+    f=$(tupl $ret)
+    args=$(echo $ret | tupx 2- | tr ',' ' ')
+  done
+  echo $args
+}
+
+res() {
+    local value=$1
+    tup "None" $value
+}
+
+call() {
+    local f=$1; shift
+    local args=$@
+    tup $f $args
+}
