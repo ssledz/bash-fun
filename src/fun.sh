@@ -167,13 +167,18 @@ revers_str() {
   cat - | splitc | revers | join
 }
 
-try() {
+catch() {
   local f="$@"
   local cmd=$(cat -)
-  local ret=$(2>&1 eval "$cmd"; echo $?)
-  local cnt=$(list $ret | wc -l)
-  local status=$(list $ret | last)
-  list "$cmd" $status $(list $ret | take $((cnt - 1)) | join \#) | $f
+  local val=$(2>&1 eval "$cmd"; echo $?)
+  local cnt=$(list $val | wc -l)
+  local status=$(list $val | last)
+  list "$cmd" $status $(list $val | take $((cnt - 1)) | unlist | tup) | $f
+}
+
+try() {
+  local f="$@"
+  catch lambda cmd status val . '[[ $status -eq 0 ]] && tupl $val || list $status | '$f
 }
 
 ret() {
@@ -220,7 +225,13 @@ buff() {
 }
 
 tup() {
-  list "$@" | map lambda x . 'echo ${x/,/u002c}' | join , '(' ')'
+  if [[ $# -eq 0 ]]; then
+    local arg
+    read arg
+    tup $arg
+  else
+    list "$@" | map lambda x . 'echo ${x/,/u002c}' | join , '(' ')'
+  fi
 }
 
 tupx() {
