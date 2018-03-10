@@ -177,7 +177,7 @@ try() {
 }
 
 ret() {
-  echo $1
+  echo $@
 }
 
 filter() {

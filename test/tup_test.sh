@@ -57,6 +57,7 @@ testTupl() {
   assertEquals '4' "$(tup 4 5 | tupl)"
   assertEquals '4' "$(tup 4 5 6 | tupl)"
   assertEquals '6' "$(tup 6 | tupl)"
+  assertEquals 'foo bar' "$(tup 'foo bar' 1 'one' 2 | tupl)"
 }
 
 testTupr() {
