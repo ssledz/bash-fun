@@ -188,9 +188,19 @@ filter() {
   done
 }
 
+stripl() {
+  local arg=$1
+  cat - | map lambda l . 'ret ${l##'$arg'}'
+}
+
+stripr() {
+  local arg=$1
+  cat - | map lambda l . 'ret ${l%%'$arg'}'
+}
+
 strip() {
   local arg=$1
-  cat - | map lambda l . 'ret ${l##'$arg'}' | map lambda l . 'ret ${l%%'$arg'}'
+  cat - | stripl "$arg" | stripr "$arg"
 }
 
 buff() {
@@ -210,7 +220,7 @@ buff() {
 }
 
 tup() {
-  list "$@" | join , '(' ')'
+  list "$@" | map lambda x . 'echo ${x/,/u002c}' | join , '(' ')'
 }
 
 tupx() {
@@ -221,7 +231,7 @@ tupx() {
   else
     local n=$1
     shift
-    list "$@" | strip '\(' | strip '\)' | unlist | cut -d',' -f${n}
+    echo "$@" | stripl '(' | stripr ')' | cut -d',' -f${n} | tr ',' '\n' | map lambda x . 'echo ${x/u002c/,}'
   fi
 }
 
@@ -230,7 +240,7 @@ tupl() {
 }
 
 tupr() {
-  tupx 2 "$@"
+  tupx 1- "$@" | last
 }
 
 zip() {
