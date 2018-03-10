@@ -119,7 +119,7 @@ mul() {
   ( set -f; echo $(($1 * $2)) )
 }
 
-add() {
+plus() {
   echo $(($1 + $2))
 }
 
@@ -212,7 +212,7 @@ buff() {
   local cnt=-1
   for x in $@; do
     [[ $x = '.' ]] && break
-    cnt=$(add $cnt 1)
+    cnt=$(plus $cnt 1)
   done
   local args=''
   local i=$cnt

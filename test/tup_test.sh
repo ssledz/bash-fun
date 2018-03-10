@@ -1,7 +1,7 @@
 #! /bin/bash
 
 testTupIfEmpty() {
-  assertEquals '()' $(tup)
+  assertEquals '()' $(tup '')
 }
 
 testTupIfOneElement() {
@@ -28,8 +28,8 @@ testTupxHappyPath() {
 }
 
 testTupxIfEmpty() {
-  assertEquals '' "$(tup | tupx 1)"
-  assertEquals '' "$(tup | tupx 5)"
+  assertEquals '' "$(tup '' | tupx 1)"
+  assertEquals '' "$(tup '' | tupx 5)"
 }
 
 testTupxIfZeroIndex() {
