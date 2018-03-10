@@ -12,7 +12,8 @@ seq 1 4 | sum
 ```
 
 # Functions overview
-
+|||||||
+|------|------|------|------|------|------|
 |**plus**|**append**|**buff**|**curry**|**div**|**drop**|
 |**factorial**|**filter**|**foldl**|**foldr**|**head**|**join**|
 |**lambda**|**last**|**list**|**map**|**mod**|**mul**|
