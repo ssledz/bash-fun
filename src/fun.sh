@@ -173,12 +173,12 @@ catch() {
   local val=$(2>&1 eval "$cmd"; echo $?)
   local cnt=$(list $val | wc -l)
   local status=$(list $val | last)
-  list "$cmd" $status $(list $val | take $((cnt - 1)) | unlist | tup) | $f
+  $f < <(list "$cmd" $status $(list $val | take $((cnt - 1)) | unlist | tup))
 }
 
 try() {
   local f="$@"
-  catch lambda cmd status val . '[[ $status -eq 0 ]] && tupl $val || list $status | '$f
+  catch lambda cmd status val . '[[ $status -eq 0 ]] && tupx 1- $val | unlist || { '"$f"' < <(list $status); }'
 }
 
 ret() {
