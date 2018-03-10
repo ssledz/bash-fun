@@ -119,7 +119,7 @@ mul() {
   ( set -f; echo $(($1 * $2)) )
 }
 
-add() {
+plus() {
   echo $(($1 + $2))
 }
 
@@ -167,16 +167,22 @@ revers_str() {
   cat - | splitc | revers | join
 }
 
-try() {
+catch() {
   local f="$@"
   local cmd=$(cat -)
-  ret="$(2>&1 $cmd)"
-  local status=$?
-  list "$cmd" $status $(list $ret | join \#) | $f
+  local val=$(2>&1 eval "$cmd"; echo $?)
+  local cnt=$(list $val | wc -l)
+  local status=$(list $val | last)
+  $f < <(list "$cmd" $status $(list $val | take $((cnt - 1)) | unlist | tup))
+}
+
+try() {
+  local f="$@"
+  catch lambda cmd status val . '[[ $status -eq 0 ]] && tupx 1- $val | unlist || { '"$f"' < <(list $status); }'
 }
 
 ret() {
-  echo $1
+  echo $@
 }
 
 filter() {
@@ -187,16 +193,26 @@ filter() {
   done
 }
 
+stripl() {
+  local arg=$1
+  cat - | map lambda l . 'ret ${l##'$arg'}'
+}
+
+stripr() {
+  local arg=$1
+  cat - | map lambda l . 'ret ${l%%'$arg'}'
+}
+
 strip() {
   local arg=$1
-  cat - | map lambda l . 'ret ${l##'$arg'}' | map lambda l . 'ret ${l%%'$arg'}'
+  cat - | stripl "$arg" | stripr "$arg"
 }
 
 buff() {
   local cnt=-1
   for x in $@; do
     [[ $x = '.' ]] && break
-    cnt=$(add $cnt 1)
+    cnt=$(plus $cnt 1)
   done
   local args=''
   local i=$cnt
@@ -209,7 +225,13 @@ buff() {
 }
 
 tup() {
-  list "$@" | join , '(' ')'
+  if [[ $# -eq 0 ]]; then
+    local arg
+    read arg
+    tup $arg
+  else
+    list "$@" | map lambda x . 'echo ${x/,/u002c}' | join , '(' ')'
+  fi
 }
 
 tupx() {
@@ -220,7 +242,7 @@ tupx() {
   else
     local n=$1
     shift
-    list "$@" | strip '\(' | strip '\)' | unlist | cut -d',' -f${n}
+    echo "$@" | stripl '(' | stripr ')' | cut -d',' -f${n} | tr ',' '\n' | map lambda x . 'echo ${x/u002c/,}'
   fi
 }
 
@@ -229,7 +251,7 @@ tupl() {
 }
 
 tupr() {
-  tupx 2 "$@"
+  tupx 1- "$@" | last
 }
 
 zip() {
@@ -241,7 +263,7 @@ zip() {
   done
 }
 
-function curry() {
+curry() {
   exportfun=$1; shift
   fun=$1; shift
   params=$*
@@ -252,3 +274,25 @@ function curry() {
   eval $cmd
 }
 
+with_trampoline() {
+  local f=$1; shift
+  local args=$@
+  while [[ $f != 'None' ]]; do
+    ret=$($f $args)
+#    echo $ret
+    f=$(tupl $ret)
+    args=$(echo $ret | tupx 2- | tr ',' ' ')
+  done
+  echo $args
+}
+
+res() {
+    local value=$1
+    tup "None" $value
+}
+
+call() {
+    local f=$1; shift
+    local args=$@
+    tup $f $args
+}
