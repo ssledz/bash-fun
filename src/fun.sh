@@ -193,6 +193,26 @@ filter() {
   done
 }
 
+pass() {
+  echo > /dev/null
+}
+
+dropw() {
+  local x
+  while read x && $(echo "$x" | "$@"); do
+    pass
+  done
+  [[ ! -z $x ]] && { echo $x; cat -; }
+}
+
+peek() {
+  local x
+  while read x; do
+    ([ $# -eq 0 ] && 1>&2 echo $x || 1>&2 "$@" < <(echo $x))
+    echo $x
+  done
+}
+
 stripl() {
   local arg=$1
   cat - | map lambda l . 'ret ${l##'$arg'}'
