@@ -347,3 +347,4 @@ Adam,Monika,Slawek,Daniel,Bartek
 
 # Resources
 * [Inspiration](https://quasimal.com/posts/2012-05-21-funsh.html)
+* [Functional Programming in Bash](https://medium.com/@joydeepubuntu/functional-programming-in-bash-145b6db336b7)
