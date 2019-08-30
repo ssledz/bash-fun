@@ -66,10 +66,22 @@ lambda() {
 }
 
 map() {
-  local x
-  while read x; do
-    echo "$x" | "$@"
-  done
+  if [[ $1 != "λ" ]] && [[ $1 != "lambda" ]]; then
+
+    local has_dollar=$(list $@ | grep '\$' | wc -l)
+
+    if [[ $has_dollar -ne 0 ]]; then
+      args=$(echo $@ | sed -e 's/\$/\$a/g')
+      map λ a . $args
+    else
+      map λ a . "$@"' $a'
+    fi
+  else
+    local x
+    while read x; do
+      echo "$x" | "$@"
+    done
+  fi
 }
 
 foldl() {
