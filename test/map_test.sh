@@ -30,4 +30,9 @@ testFlatMap() {
     assertEquals "d e h l l l o o r w" "$(list hello world | map lambda x . 'command fold -w 1 <<< $x' | sort | unlist)"
 }
 
+testMapNoLambdaSyntax() {
+  assertEquals "1 2 3" "$(list 1 2 3 | map echo | unlist)"
+  assertEquals "1 is a number 2 is a number 3 is a number" "$(list 1 2 3 | map 'echo $ is a number' | unlist)"
+}
+
 . ./shunit2-init.sh
