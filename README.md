@@ -83,6 +83,22 @@ bB
 sS
 dD
 eE
+
+$ list 1 2 3 | map echo
+1
+2
+3
+
+$ list 1 2 3 | map 'echo $ is a number'
+1 is a number
+2 is a number
+3 is a number
+
+$ list 1 2 3 4 | map 'echo \($,$\) is a point'
+(1,1) is a point
+(2,2) is a point
+(3,3) is a point
+(4,4) is a point
 ```
 
 ## *flat map*
