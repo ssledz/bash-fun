@@ -69,4 +69,16 @@ testTupr() {
   assertEquals '5' "$(tup 5 | tupr)"
 }
 
+testNTup() {
+  assertEquals '(KFlRbz0sWWdvPSkK,Ywo=)' "$(ntup $(ntup a b) c)"
+  assertEquals '(YQo=,Ygo=)' "$(ntupl '(KFlRbz0sWWdvPSkK,Ywo=)')"
+  assertEquals 'a' "$(ntupl '(YQo=,Ygo=)')"
+  assertEquals 'b' "$(ntupr '(YQo=,Ygo=)')"
+  assertEquals 'c' "$(ntupr '(KFlRbz0sWWdvPSkK,Ywo=)')"
+  assertEquals 'a' "$(ntup $(ntup a b) c | ntupx 1 | ntupx 1)"
+  assertEquals 'b' "$(ntup $(ntup a b) c | ntupx 1 | ntupx 2)"
+  assertEquals 'c' "$(ntup $(ntup a b) c | ntupx 2)"
+  assertEquals 'a b' "$(ntup $(ntup a b) c | ntupx 1 | ntupx 1,2 | unlist)"
+}
+
 . ./shunit2-init.sh

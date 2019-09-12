@@ -286,6 +286,36 @@ tupr() {
   tupx 1- "$@" | last
 }
 
+ntup() {
+  if [[ $# -eq 0 ]]; then
+    local arg
+    read arg
+    ntup $arg
+  else
+    list "$@" | map lambda x . 'echo "$x" | base64 --wrap=0 ; echo' | join , '(' ')'
+  fi
+}
+
+ntupx() {
+  if [[ $# -eq 1 ]]; then
+    local arg
+    read arg
+    ntupx "$1" "$arg"
+  else
+    local n=$1
+    shift
+    echo "$@" | stripl '(' | stripr ')' | cut -d',' -f${n} | tr , '\n' | map lambda x . 'echo "$x" | base64 -d'
+  fi
+}
+
+ntupl() {
+  ntupx 1 "$@"
+}
+
+ntupr() {
+  ntupx 1- "$@" | last
+}
+
 zip() {
   local list=$*
   cat - | while read x; do
