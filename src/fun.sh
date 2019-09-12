@@ -358,3 +358,43 @@ call() {
     local args=$@
     tup $f $args
 }
+
+maybe() {
+  if [[ $# -eq 0 ]]; then
+    local arg
+    read arg
+    maybe "$arg"
+  else
+    local x="$*"
+    local value=$(echo $x | strip)
+    if [[ ${#value} -eq 0 ]]; then
+      tup Nothing
+    else
+      tup Just "$value"
+    fi
+  fi
+}
+
+maybemap() {
+  local x
+  read x
+  if [[ $(tupl $x) = "Nothing" ]]; then
+    echo $x
+  else
+    local y=$(tupr "$x")
+    local r=$(echo "$y" | map "$@")
+    maybe "$r"
+  fi
+}
+
+maybevalue() {
+  local default="$*"
+  local x
+  read x
+  if [[ $(tupl $x) = "Nothing" ]]; then
+      echo "$default"
+  else
+      echo $(tupr $x)
+  fi
+}
+
