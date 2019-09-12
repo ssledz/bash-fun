@@ -8,11 +8,11 @@ take() {
   command head -n ${1}
 }
 
-tail() {
+ltail() {
   drop 1
 }
 
-head() {
+lhead() {
   take 1
 }
 
@@ -316,7 +316,7 @@ ntupr() {
   ntupx 1- "$@" | last
 }
 
-zip() {
+lzip() {
   local list=$*
   cat - | while read x; do
     y=$(list $list | take 1)
