@@ -398,3 +398,40 @@ maybevalue() {
   fi
 }
 
+
+# commonly used predicates for filter
+# e.g.  list 1 a 2 b 3 c | filter lambda x . 'isint $x'
+
+# inverse another test, e.g. "not isint $x"
+not() {
+  local r=$("$@" 2>/dev/null)
+  $r && ret false || ret true
+}
+
+isint() {
+  [ "$1" -eq "$1" ] 2>/dev/null && ret true || ret false
+}
+
+isempty() {
+  [ -z "$1" ] && ret true || ret false
+}
+
+isfile() {
+  [ -f "$1" ] && ret true || ret false
+}
+
+isnonzerofile() {
+  [ -s "$1" ] && ret true || ret false
+}
+
+isreadable() {
+  [ -r "$1" ] && ret true || ret false
+}
+
+iswritable() {
+  [ -w "$1" ] && ret true || ret false
+}
+
+isdir() {
+  [ -d "$1" ] && ret true || ret false
+}
