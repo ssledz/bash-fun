@@ -262,7 +262,7 @@ tup() {
     read arg
     tup $arg
   else
-    list "$@" | map lambda x . 'echo ${x/,/u002c}' | join , '(' ')'
+    list "$@" | map lambda x . 'echo ${x//,/u002c}' | join , '(' ')'
   fi
 }
 
@@ -274,7 +274,7 @@ tupx() {
   else
     local n=$1
     shift
-    echo "$@" | stripl '(' | stripr ')' | cut -d',' -f${n} | tr ',' '\n' | map lambda x . 'echo ${x/u002c/,}'
+    echo "$@" | stripl '(' | stripr ')' | cut -d',' -f${n} | tr ',' '\n' | map lambda x . 'echo ${x//u002c/,}'
   fi
 }
 
