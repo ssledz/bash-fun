@@ -9,6 +9,7 @@ testTupIfOneElement() {
   assertEquals '(")' $(tup '"')
   assertEquals "(')" $(tup "'")
   assertEquals "(u002c)" $(tup ",")
+  assertEquals "(u002cu002c)" $(tup ",,")
   assertEquals "(()" $(tup "(")
   assertEquals "())" $(tup ")")
 }
@@ -38,6 +39,7 @@ testTupxIfZeroIndex() {
 
 testTupxIfSpecialChars() {
   assertEquals ',' "$(tup ',' | tupx 1)"
+  assertEquals ',,' "$(tup ',,' | tupx 1)"
   assertEquals '(' "$(tup '(' | tupx 1)"
   assertEquals ')' "$(tup ')' | tupx 1)"
   assertEquals '()' "$(tup '()' | tupx 1)"
@@ -45,6 +47,7 @@ testTupxIfSpecialChars() {
   assertEquals '(' "$(tup '(' '(' | tupx 1)"
   assertEquals ')' "$(tup ')' ')' | tupx 1)"
   assertEquals ',' "$(tup 'u002c' | tupx 1)"
+  assertEquals ',,' "$(tup 'u002cu002c' | tupx 1)"
 }
 
 testTupxRange() {
