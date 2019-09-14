@@ -8,11 +8,11 @@ take() {
   command head -n ${1}
 }
 
-tail() {
+ltail() {
   drop 1
 }
 
-head() {
+lhead() {
   take 1
 }
 
@@ -262,7 +262,7 @@ tup() {
     read arg
     tup $arg
   else
-    list "$@" | map lambda x . 'echo ${x/,/u002c}' | join , '(' ')'
+    list "$@" | map lambda x . 'echo ${x//,/u002c}' | join , '(' ')'
   fi
 }
 
@@ -274,7 +274,7 @@ tupx() {
   else
     local n=$1
     shift
-    echo "$@" | stripl '(' | stripr ')' | cut -d',' -f${n} | tr ',' '\n' | map lambda x . 'echo ${x/u002c/,}'
+    echo "$@" | stripl '(' | stripr ')' | cut -d',' -f${n} | tr ',' '\n' | map lambda x . 'echo ${x//u002c/,}'
   fi
 }
 
@@ -286,7 +286,37 @@ tupr() {
   tupx 1- "$@" | last
 }
 
-zip() {
+ntup() {
+  if [[ $# -eq 0 ]]; then
+    local arg
+    read arg
+    ntup $arg
+  else
+    list "$@" | map lambda x . 'echo "$x" | base64 --wrap=0 ; echo' | join , '(' ')'
+  fi
+}
+
+ntupx() {
+  if [[ $# -eq 1 ]]; then
+    local arg
+    read arg
+    ntupx "$1" "$arg"
+  else
+    local n=$1
+    shift
+    echo "$@" | stripl '(' | stripr ')' | cut -d',' -f${n} | tr , '\n' | map lambda x . 'echo "$x" | base64 -d'
+  fi
+}
+
+ntupl() {
+  ntupx 1 "$@"
+}
+
+ntupr() {
+  ntupx 1- "$@" | last
+}
+
+lzip() {
   local list=$*
   cat - | while read x; do
     y=$(list $list | take 1)
@@ -327,4 +357,81 @@ call() {
     local f=$1; shift
     local args=$@
     tup $f $args
+}
+
+maybe() {
+  if [[ $# -eq 0 ]]; then
+    local arg
+    read arg
+    maybe "$arg"
+  else
+    local x="$*"
+    local value=$(echo $x | strip)
+    if [[ ${#value} -eq 0 ]]; then
+      tup Nothing
+    else
+      tup Just "$value"
+    fi
+  fi
+}
+
+maybemap() {
+  local x
+  read x
+  if [[ $(tupl $x) = "Nothing" ]]; then
+    echo $x
+  else
+    local y=$(tupr "$x")
+    local r=$(echo "$y" | map "$@")
+    maybe "$r"
+  fi
+}
+
+maybevalue() {
+  local default="$*"
+  local x
+  read x
+  if [[ $(tupl $x) = "Nothing" ]]; then
+      echo "$default"
+  else
+      echo $(tupr $x)
+  fi
+}
+
+
+# commonly used predicates for filter
+# e.g.  list 1 a 2 b 3 c | filter lambda x . 'isint $x'
+
+# inverse another test, e.g. "not isint $x"
+not() {
+  local r=$("$@" 2>/dev/null)
+  $r && ret false || ret true
+}
+
+isint() {
+  [ "$1" -eq "$1" ] 2>/dev/null && ret true || ret false
+}
+
+isempty() {
+  [ -z "$1" ] && ret true || ret false
+}
+
+isfile() {
+  [ -f "$1" ] && ret true || ret false
+}
+
+isnonzerofile() {
+  [ -s "$1" ] && ret true || ret false
+}
+
+isreadable() {
+  [ -r "$1" ] && ret true || ret false
+}
+
+iswritable() {
+  [ -w "$1" ] && ret true || ret false
+}
+
+isdir() {
+  [ -d "$1" ] && ret true || ret false
 }

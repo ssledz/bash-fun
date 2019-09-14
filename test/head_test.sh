@@ -1,16 +1,16 @@
 #! /bin/bash
 
-testHeadFromList() {
-  assertEquals 1 $(list {1..10} | head)
-  assertEquals 5 $(list 5 6 7 | head)
+testLHeadFromList() {
+  assertEquals 1 $(list {1..10} | lhead)
+  assertEquals 5 $(list 5 6 7 | lhead)
 }
 
-testHeadFromOneElementList() {
-  assertEquals 1 $(list 1 | head)
+testLHeadFromOneElementList() {
+  assertEquals 1 $(list 1 | lhead)
 }
 
-testHeadFromEmptyList() {
-  assertEquals "" "$(list | head)"
+testLHeadFromEmptyList() {
+  assertEquals "" "$(list | lhead)"
 }
 
 . ./shunit2-init.sh

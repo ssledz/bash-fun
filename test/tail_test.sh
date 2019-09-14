@@ -1,15 +1,15 @@
 #! /bin/bash
 
-testTailFrom10() {
-  assertEquals "2 3 4 5 6 7 8 9 10" "$(list {1..10} | tail | unlist)"
+testLTailFrom10() {
+  assertEquals "2 3 4 5 6 7 8 9 10" "$(list {1..10} | ltail | unlist)"
 }
 
-testTailFromOneElementList() {
-  assertEquals "" "$(list 1 | tail)"
+testLTailFromOneElementList() {
+  assertEquals "" "$(list 1 | ltail)"
 }
 
-testTailFromEmptyList() {
-  assertEquals "" "$(list | tail)"
+testLTailFromEmptyList() {
+  assertEquals "" "$(list | ltail)"
 }
 
 . ./shunit2-init.sh
