@@ -431,6 +431,21 @@ processNames adam monika s slawek d daniel Bartek j k
 Adam,Monika,Slawek,Daniel,Bartek
 ```
 
+# Running tests
+
+```bash
+cd test
+./test_runner
+```
+
+# Contribution guidelines
+
+Feel free to ask questions in chat, open issues, or contribute by creating pull requests.
+
+In order to create a pull request
+* checkout develop branch
+* introduce your changes
+* submit pull request
 
 # Resources
 * [Inspiration](https://quasimal.com/posts/2012-05-21-funsh.html)
