@@ -1,26 +1,25 @@
 #!/bin/bash
-
 source ../src/fun.sh
 
 seq 1 4 | sum
 seq 1 4 | product
 factorial 4
-seq 1 4 | scanl lambda a b . 'echo $(add $a $b)'
+seq 1 4 | scanl lambda a b . 'echo $(plus $a $b)'
 echo map mul
 seq 1 4 | map lambda a . 'echo $(mul $a 2)'
 echo map sub
 seq 1 4 | map lambda a . 'echo $(sub $a 2)'
-echo map add
-seq 1 4 | map lambda a . 'echo $(add $a 2)'
+echo map plsu
+seq 1 4 | map lambda a . 'echo $(plus $a 2)'
 echo map div
 seq 1 4 | map lambda a . 'echo $(div $a 2)'
 echo map mod
 seq 1 4 | map lambda a . 'echo $(mod $a 2)'
 echo 'list & head'
-list 1 2 3 4 5 | head
+list 1 2 3 4 5 | lhead
 list {1..2} | append {3..4} | prepend {99..102}
 list {1..2} | unlist
-list {1..10} | head
+list {1..10} | lhead
 list {1..10} | drop 7
 list {1..10} | take 3
 list {1..10} | last
@@ -83,10 +82,10 @@ seq 1 10 | buff lambda a b . 'echo $(($a + $b))'
 echo 'XX'
 seq 1 10 | buff lambda a b c d e . 'echo $(($a + $b + $c + $d + $e))'
 
-list a b c d e f | zip $(seq 1 10)
+list a b c d e f | lzip $(seq 1 10)
 
 echo
-list a b c d e f | zip $(seq 1 10) | last | tupr
+list a b c d e f | lzip $(seq 1 10) | last | tupr
 
 arg='[key1=value1,key2=value2,key3=value3]'
 get() {
@@ -155,5 +154,6 @@ echo Factorial test
 time factorial 30
 time factorial_trampoline 30
 
-time factorial 60
+# would be error
+#time factorial 60
 time factorial_trampoline 60

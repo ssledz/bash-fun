@@ -14,13 +14,17 @@ seq 1 4 | sum
 # Functions overview
 |||||||
 |------|------|------|------|------|------|
-|**plus**|**append**|**buff**|**curry**|**div**|**drop**|
-|**factorial**|**filter**|**foldl**|**foldr**|**head**|**join**|
-|**lambda**|**last**|**list**|**map**|**mod**|**mul**|
-|**prepend**|**product**|**ret**|**revers_str**|**revers**|**scanl**|
-|**splitc**|**strip**|**sub**|**sum**|**tail**|**take**|
-|**catch**|**try**|**tupl**|**tupr**|**tup**|**tupx**|
-|**unlist**|**zip**|**λ**|**with_trampoline**|**res**|**call**|
+|**append**|**buff**|**call**|**catch**|**curry**|**div**|
+|**drop**|**dropw**|**factorial**|**filter**|**foldl**|**foldr**|
+|**isint**|**isempty**|**isfile**|**isnonzerofile**|**isreadable**|**iswritable**|
+|**isdir**|**join**|**lambda**|**last**|**lhead**|**list**|
+|**ltail**|**lzip**|**map**|**maybe**|**maybemap**|**maybevalue**|
+|**mod**|**mul**|**not**|**ntup**|**ntupl**|**ntupr**|
+|**ntupx**|**peek**|**plus**|**prepend**|**product**|**ret**|
+|**res**|**revers**|**revers_str**|**scanl**|**splitc**|**strip**|
+|**stripl**|**stripr**|**sub**|**sum**|**take**|**try**|
+|**tup**|**tupl**|**tupr**|**tupx**|**unlist**|**λ**|
+|**with_trampoline**|
 
 ## *list/unlist*
 
@@ -34,17 +38,17 @@ $ list 1 2 3 4 5 | unlist
 1 2 3 4 5
 ```
 
-## *take/drop/tail/head/last*
+## *take/drop/ltail/lhead/last*
 
 ```bash
 $ list 1 2 3 4 | drop 2
 3
 4
 
-$ list 1 2 3 4 5 | head
+$ list 1 2 3 4 5 | lhead
 1
 
-$ list 1 2 3 4 | tail
+$ list 1 2 3 4 | ltail
 2
 3
 4
@@ -190,6 +194,30 @@ one
 2
 ```
 
+## *ntup/ntupx/ntupl/ntupr*
+
+```bash
+$ ntup a 1 b 2 c 3
+(YQo=,MQo=,Ygo=,Mgo=,Ywo=,Mwo=)
+
+$ echo '(YQo=,MQo=,Ygo=,Mgo=,Ywo=,Mwo=)' | ntupx 3
+b
+
+$ ntup 'foo bar' 1 one 1
+(Zm9vIGJhcgo=,MQo=,b25lCg==,MQo=)
+
+$ echo '(Zm9vIGJhcgo=,MQo=,b25lCg==,MQo=)' | ntupx 1
+foo bar
+```
+
+```bash
+$ ntupl $(ntup 'foo bar' 1 one 2)
+foo bar
+
+$ ntupr $(ntup 'foo bar' 1 one 2)
+2
+```
+
 ## *buff*
 
 ```bash
@@ -205,10 +233,10 @@ $ seq 1 10 | buff λ a b c d e . 'echo $(($a + $b + $c + $d + $e))'
 40
 ```
 
-## *zip*
+## *lzip*
 
 ```bash
-$ list a b c d e f | zip $(seq 1 10)
+$ list a b c d e f | lzip $(seq 1 10)
 (a,1)
 (b,2)
 (c,3)
@@ -218,7 +246,7 @@ $ list a b c d e f | zip $(seq 1 10)
 ```
 
 ```bash
-$ list a b c d e f | zip $(seq 1 10) | last | tupr
+$ list a b c d e f | lzip $(seq 1 10) | last | tupr
 6
 ```
 
@@ -243,6 +271,49 @@ $ seq 1 3 | map λ a . 'inc $a'
 3
 4
 ```
+
+## *peek*
+
+```bash
+$ list 1 2 3 \
+    | peek lambda a . echo 'dbg a : $a' \
+    | map lambda a . 'mul $a 2' \
+    | peek lambda a . echo 'dbg b : $a' \
+    | sum
+
+dbg a : 1
+dbg a : 2
+dbg a : 3
+dbg b : 2
+dbg b : 4
+dbg b : 6
+12
+```
+
+```bash
+$ a=$(seq 1 4 | peek lambda a . echo 'dbg: $a' | sum)
+
+dbg: 1
+dbg: 2
+dbg: 3
+dbg: 4
+
+$ echo $a
+
+10
+```
+
+## *maybe/maybemap/maybevalue*
+
+TODO
+
+## *not/isint/isempty*
+
+TODO
+
+## *isfile/isnonzerofile/isreadable/iswritable/isdir*
+
+TODO
 
 ## *try/catch*
 
@@ -360,6 +431,21 @@ processNames adam monika s slawek d daniel Bartek j k
 Adam,Monika,Slawek,Daniel,Bartek
 ```
 
+# Running tests
+
+```bash
+cd test
+./test_runner
+```
+
+# Contribution guidelines
+
+Feel free to ask questions in chat, open issues, or contribute by creating pull requests.
+
+In order to create a pull request
+* checkout develop branch
+* introduce your changes
+* submit pull request
 
 # Resources
 * [Inspiration](https://quasimal.com/posts/2012-05-21-funsh.html)
