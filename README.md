@@ -197,17 +197,17 @@ one
 ## *ntup/ntupx/ntupl/ntupr*
 
 ```bash
-$ ntup a 1 b 2 c 3
-(YQo=,MQo=,Ygo=,Mgo=,Ywo=,Mwo=)
+$ ntup tuples that $(ntup safely nest)
+(dHVwbGVzCg==,dGhhdAo=,KGMyRm1aV3g1Q2c9PSxibVZ6ZEFvPSkK)
 
-$ echo '(YQo=,MQo=,Ygo=,Mgo=,Ywo=,Mwo=)' | ntupx 3
-b
+echo '(dHVwbGVzCg==,dGhhdAo=,KGMyRm1aV3g1Q2c9PSxibVZ6ZEFvPSkK)' | ntupx 3 | ntupr
+nest
 
-$ ntup 'foo bar' 1 one 1
-(Zm9vIGJhcgo=,MQo=,b25lCg==,MQo=)
+$ ntup 'foo,bar' 1 one 1
+(Zm9vLGJhcgo=,MQo=,b25lCg==,MQo=)
 
-$ echo '(Zm9vIGJhcgo=,MQo=,b25lCg==,MQo=)' | ntupx 1
-foo bar
+$ echo '(Zm9vLGJhcgo=,MQo=,b25lCg==,MQo=)' | ntupx 1
+foo,bar
 ```
 
 ```bash
@@ -305,15 +305,94 @@ $ echo $a
 
 ## *maybe/maybemap/maybevalue*
 
-TODO
+```bash
+$ list Hello | maybe
+(Just,Hello)
+
+$ list "   " | maybe
+(Nothing)
+
+$ list Hello | maybe | maybemap λ a . 'tr oH Oh <<<$a'
+(Just,hellO)
+
+$ list "   " | maybe | maybemap λ a . 'tr oH Oh <<<$a'
+(Nothing)
+
+$ echo bash-fun rocks | maybe | maybevalue DEFAULT
+bash-fun rocks
+
+$ echo | maybe | maybevalue DEFAULT
+DEFAULT
+
+```
 
 ## *not/isint/isempty*
 
-TODO
+```bash
+$ isint 42
+true
+
+$ list blah | isint
+false
+
+$ not true
+false
+
+$ not isint 777
+false
+
+$ list 1 2 "" c d 6 | filter λ a . 'isint $a'
+1
+2
+6
+
+$ list 1 2 "" c d 6 | filter λ a . 'not isempty $a'
+1
+2
+c
+d
+6
+```
 
 ## *isfile/isnonzerofile/isreadable/iswritable/isdir*
 
-TODO
+```bash
+$ touch /tmp/foo
+
+$ isfile /tmp/foo
+true
+
+$ not iswritable /
+true
+
+$ files="/etc/passwd /etc/sudoers /tmp /tmp/foo /no_such_file"
+
+$ list $files | filter λ a . 'isfile $a'
+/etc/passwd
+/etc/sudoers
+/tmp/foo
+
+$ list $files | filter λ a . 'isdir $a'
+/tmp
+
+$ list $files | filter λ a . 'isreadable $a'
+/etc/passwd
+/tmp
+/tmp/foo
+
+$ list $files | filter λ a . 'iswritable $a'
+/tmp
+/tmp/foo
+
+$ list $files | filter λ a . 'isnonzerofile $a'
+/etc/passwd
+/etc/sudoers
+/tmp
+
+$ list $files | filter λ a . 'not isfile $a'
+/tmp
+/no_such_file
+```
 
 ## *try/catch*
 
