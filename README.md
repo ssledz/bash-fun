@@ -522,8 +522,8 @@ cd test
 Feel free to ask questions in chat, open issues, or contribute by creating pull requests.
 
 In order to create a pull request
-* checkout develop branch
-* introduce your changes
+* checkout master branch
+* introduce your changes & bump version
 * submit pull request
 
 # Resources
